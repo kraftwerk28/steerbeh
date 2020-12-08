@@ -1,0 +1,1 @@
+BORDER_COLOR = (0, 0, 0)

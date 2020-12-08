@@ -1,4 +1,4 @@
-from steerbeh.launch import launch
+from steerbeh.game import Game
 
 if __name__ == '__main__':
-    launch()
+    Game().run()
