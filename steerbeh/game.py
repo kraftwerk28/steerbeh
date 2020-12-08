@@ -55,4 +55,5 @@ class Game:
             if evt.type == pg.MOUSEMOTION:
                 self.world.set_pointer_pos(Vec2(evt.pos))
             if evt.type == pg.MOUSEBUTTONDOWN:
+                self.hud.play_bow()
                 self.entitymgr.hunter_shoot()

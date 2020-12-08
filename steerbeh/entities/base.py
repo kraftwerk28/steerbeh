@@ -20,12 +20,13 @@ class Base:
         self.vel = vel
         self.acc = acc
         self.size = size
-        self.hitbox = Rect(0, 0, size, size)
+        self.hitbox = Rect(self.pos.x, self.pos.x, float(size), float(size))
         self.update_hitbox()
 
     def update_hitbox(self):
         hs = self.size // 2
-        self.hitbox.move_ip(self.pos.x - hs, self.pos.y - hs)
+        self.hitbox = Rect(self.pos.x - hs, self.pos.y - hs, self.size,
+                           self.size)
 
     def update(self, dt: float):
         self.vel += self.acc * dt
@@ -37,18 +38,16 @@ class BaseEntity(Base):
     # When to start slowing down if near target
     slowstart_radius = 80
     border_notice_distance = 100
-    seek_notice_distance = 400
+    seek_notice_distance = 200
     flee_notice_distance = 200
-    flock_notice_distance = 500
 
-    max_speed = 0.1
+    max_speed = 0.05
+    flee_max_speed = 0.1
 
     target_follow_factor = 0.01
     target_flee_factor = 0.02
     wandering_factor = 0.01
-    border_avoid_factor = 0.9
-    flock_group_factor = 0.03
-    flock_separate_factor = 0.03
+    border_avoid_factor = 1
 
     def __init__(self,
                  pos: Vec2,
@@ -61,6 +60,7 @@ class BaseEntity(Base):
         self.arrow_color = color or (0, 0, 0)
         self.steering_vec = Vec2()
         self.wandering_vec = Vec2(0, 1)
+        self.current_max_speed = BaseEntity.max_speed
 
     def seek_target(self, pos: Vec2):
         if pos.distance_squared_to(self.pos) <= self.seek_notice_distance**2:
@@ -69,8 +69,11 @@ class BaseEntity(Base):
 
     def flee_target(self, pos: Vec2):
         if pos.distance_squared_to(self.pos) <= self.flee_notice_distance**2:
+            self.current_max_speed = self.flee_max_speed
             v = (self.pos - pos).normalize() * self.target_flee_factor
             self.steering_vec += v
+        else:
+            self.current_max_speed = self.max_speed
 
     def wander(self):
         rot = self.wandering_vec.rotate(random.randint(-45, 45))
@@ -85,8 +88,8 @@ class BaseEntity(Base):
     def update(self, dt: float):
         self.vel += self.acc * dt
         self.vel = (self.vel + self.steering_vec).normalize()
-        if self.vel.length_squared() > self.max_speed**2:
-            self.vel = self.vel.normalize() * self.max_speed
+        if self.vel.length_squared() > self.current_max_speed**2:
+            self.vel = self.vel.normalize() * self.current_max_speed
         self.pos += self.vel * dt
         self.update_hitbox()
         self.steering_vec = Vec2()
@@ -97,13 +100,13 @@ class BaseEntity(Base):
                 continue
             method(entity.pos)
 
-    def collision(self, entities: List['BaseEntity']) -> List['BaseEntity']:
-        rects = [e.hitbox for e in entities]
+    def collision(self, entities: List['Base']) -> List['BaseEntity']:
+        rects = [e.hitbox for e in entities if e != self]
         indices = self.hitbox.collidelistall(rects)
         return [entities[i] for i in indices]
 
     def render(self, sf: Surface) -> Surface:
         arrow_sf = Surface((20, 20), SRCALPHA)
-        rect = draw.polygon(arrow_sf, self.arrow_color, ARROW_PTS)
+        draw.polygon(arrow_sf, self.arrow_color, ARROW_PTS)
         final_sf = transform.rotate(arrow_sf, self.vel.angle_to(ANG_VEC))
         sf.blit(final_sf, (self.pos.x - 10, self.pos.y - 10))

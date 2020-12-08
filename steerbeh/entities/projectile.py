@@ -4,8 +4,10 @@ from pygame import draw, Surface
 
 
 class Projectile(Base):
+    speed_multiplier = 3
+
     def __init__(self, source: BaseEntity):
-        new_vel = source.vel * 2
+        new_vel = source.vel * self.speed_multiplier
         super().__init__(Vec2(source.pos), new_vel, Vec2(source.acc))
 
     def render(self, sf: Surface):

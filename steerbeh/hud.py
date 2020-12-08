@@ -6,11 +6,10 @@ from pygame import Surface, font, mixer
 class Hud:
     def __init__(self):
         self.assets_path = path.abspath('assets')
-        fontpath = path.join(self.assets_path,
-                             'fonts/JetBrainsMonoNL-Regular.ttf')
+        fontpath = path.join(self.pth('fonts/JetBrainsMonoNL-Regular.ttf'))
         self.font = font.SysFont(fontpath, 16)
-        self.damage_snd = mixer.Sound(
-            path.join(self.assets_path, 'sounds/hit1.ogg'))
+        self.damage_snd = mixer.Sound(self.pth('sounds/hit1.ogg'))
+        self.bow_snd = mixer.Sound(self.pth('sounds/bow.ogg'))
         self.fps_label = None
         self.fps(0.)
 
@@ -20,6 +19,12 @@ class Hud:
 
     def play_damage(self):
         self.damage_snd.play()
+
+    def play_bow(self):
+        self.bow_snd.play()
+
+    def pth(self, *parts):
+        return path.join(self.assets_path, *parts)
 
     def render(self, sf: Surface):
         sf.blit(self.fps_label, (10, 10))
