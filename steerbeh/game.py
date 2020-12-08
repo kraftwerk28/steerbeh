@@ -8,6 +8,7 @@ from .world import World
 from .hud import Hud
 from .entity_manager import EntityManager
 from .utils import vec2inttup
+from .constants import BACKGROUND_COLOR
 
 
 class Game:
@@ -26,13 +27,15 @@ class Game:
 
     def run(self):
         self.running = True
-        while self.running:
+        while self.running and not self.entitymgr.hunter.died:
             self.hud.fps(self.clock.get_fps())
 
             self.update()
             self.render()
             self.fetch_events()
             self.clock.tick(self.fps)
+        score = self.entitymgr.hunter.score
+        print(f'You lost; score = {score}')
 
     def update(self):
         self.entitymgr.follow_mouse(self.world.get_pointer_steer_vec())
@@ -42,7 +45,7 @@ class Game:
         self.entitymgr.update(dt, self.world)
 
     def render(self):
-        self.screen.fill((255, 255, 255))
+        self.screen.fill(BACKGROUND_COLOR)
         self.world.render(self.screen, self.entitymgr.get_all_entities())
         self.hud.render(self.screen)
         pg.display.flip()

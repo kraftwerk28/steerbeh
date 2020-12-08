@@ -10,6 +10,7 @@ class Hud:
         self.font = font.SysFont(fontpath, 16)
         self.damage_snd = mixer.Sound(self.pth('sounds/hit1.ogg'))
         self.bow_snd = mixer.Sound(self.pth('sounds/bow.ogg'))
+        self.fall_snd = mixer.Sound(self.pth('sounds/fallbig.ogg'))
         self.fps_label = None
         self.fps(0.)
 
@@ -22,6 +23,9 @@ class Hud:
 
     def play_bow(self):
         self.bow_snd.play()
+
+    def play_fall(self):
+        self.fall_snd.play()
 
     def pth(self, *parts):
         return path.join(self.assets_path, *parts)

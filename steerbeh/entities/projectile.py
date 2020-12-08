@@ -12,4 +12,4 @@ class Projectile(Base):
 
     def render(self, sf: Surface):
         pos = (self.pos.x, self.pos.y)
-        draw.circle(sf, (0, 0, 0), pos, 5)
+        draw.circle(sf, (255, 255, 255), pos, 5)

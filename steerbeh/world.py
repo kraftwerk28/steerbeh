@@ -2,7 +2,7 @@ from pygame.math import Vector2 as Vec2
 from typing import List
 from pygame import Surface, draw, SRCALPHA, Rect
 from .entities.base import BaseEntity
-from .constants import BORDER_COLOR
+from .constants import WORLD_BORDER_COLOR
 from .utils import rand_vec2
 
 
@@ -29,7 +29,7 @@ class World:
     def render(self, sf: Surface, entities: List[BaseEntity] = []):
         rect_sf = Surface((self.world_size.x, self.world_size.y), SRCALPHA)
         rect = Rect(0, 0, self.world_size.x, self.world_size.y)
-        draw.rect(rect_sf, BORDER_COLOR, rect, width=10)
+        draw.rect(rect_sf, WORLD_BORDER_COLOR, rect, width=10)
         for entity in entities:
             entity.render(rect_sf)
 

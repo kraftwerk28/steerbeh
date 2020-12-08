@@ -12,9 +12,11 @@ class EntityManager:
         self.hud = hud
         self.hunter: Hunter = Hunter(world.rand_pos())
         self.hares: List[Hare] = [Hare(world.rand_pos()) for _ in range(10)]
+        # self.hares = []
         self.wolves: List[Wolf] = [Wolf(world.rand_pos()) for _ in range(4)]
-        self.wolves = []
+        # self.wolves = []
         self.llamas: List[Llama] = [Llama(world.rand_pos()) for _ in range(8)]
+        # self.llamas = []
         self.projectiles: List[Projectile] = []
 
     def update(self, dt: float, world: World):
@@ -45,6 +47,7 @@ class EntityManager:
                 ent = entities[coll_idx]
                 if type(ent) in Wolf.killable_entities:
                     died_entities.add(ent)
+                    self.hud.play_damage()
             wolf.update(dt)
 
         for llama in self.llamas:
@@ -62,17 +65,19 @@ class EntityManager:
                 if type(ent) not in (Projectile, Hunter):
                     died_proj.add(proj)
                     died_entities.add(ent)
+                    self.hunter.score += 1
+                    self.hud.play_damage()
             if not self.world.bound_rect.collidepoint(proj.pos.x, proj.pos.y):
                 died_proj.add(proj)
 
         for ent in entities:
             if (not world.bound_rect.contains(ent.hitbox)
                     and type(ent) != Projectile):
+                self.hud.play_fall()
                 died_entities.add(ent)
 
         if died_entities:
             self.cleanup_entities(died_entities)
-            self.hud.play_damage()
 
         for proj in died_proj:
             self.projectiles.remove(proj)
@@ -88,10 +93,12 @@ class EntityManager:
             ty = type(e)
             if ty == Hare:
                 self.hares.remove(e)
-            if ty == Llama:
+            elif ty == Llama:
                 self.llamas.remove(e)
             elif ty == Wolf:
                 self.wolves.remove(e)
+            elif ty == Hunter:
+                self.hunter.died = True
 
     def get_all_entities(self,
                          with_hunter=True,

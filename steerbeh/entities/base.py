@@ -47,7 +47,7 @@ class BaseEntity(Base):
     target_follow_factor = 0.01
     target_flee_factor = 0.02
     wandering_factor = 0.01
-    border_avoid_factor = 1
+    border_avoid_factor = 0.01
 
     def __init__(self,
                  pos: Vec2,
@@ -61,6 +61,10 @@ class BaseEntity(Base):
         self.steering_vec = Vec2()
         self.wandering_vec = Vec2(0, 1)
         self.current_max_speed = BaseEntity.max_speed
+        self.setup()
+
+    def setup(self):
+        pass
 
     def seek_target(self, pos: Vec2):
         if pos.distance_squared_to(self.pos) <= self.seek_notice_distance**2:
