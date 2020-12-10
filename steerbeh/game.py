@@ -9,20 +9,22 @@ from .hud import Hud
 from .entity_manager import EntityManager
 from .utils import vec2inttup
 from .constants import BACKGROUND_COLOR
+from .gamecfg import GameCfg
 
 
 class Game:
-    fps = 30
     world_size = Vec2(800, 800)
     screen_size = Vec2(1000, 700)
 
-    def __init__(self):
+    def __init__(self, config: GameCfg):
+        self.config = config
         pg.init()
+        self.fps = config.fps
         self.clock = pg.time.Clock()
-        self.world = World(self.screen_size, self.world_size)
+        self.world = World(self.config.screen_size, self.config.world_size)
         self.screen = pg.display.set_mode(vec2inttup(self.screen_size))
         self.hud = Hud()
-        self.entitymgr = EntityManager(self.world, self.hud)
+        self.entitymgr = EntityManager(self.config, self.world, self.hud)
         self.running = False
 
     def run(self):

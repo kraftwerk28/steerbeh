@@ -4,19 +4,23 @@ from .entities import Hunter, Hare, BaseEntity, Projectile, Wolf, Llama
 from .world import World
 from .utils import rand_vec2
 from .hud import Hud
+from .gamecfg import GameCfg
 
 
 class EntityManager:
-    def __init__(self, world: World, hud: Hud):
+    def __init__(self, config: GameCfg, world: World, hud: Hud):
         self.world = world
         self.hud = hud
         self.hunter: Hunter = Hunter(world.rand_pos())
-        self.hares: List[Hare] = [Hare(world.rand_pos()) for _ in range(10)]
-        # self.hares = []
-        self.wolves: List[Wolf] = [Wolf(world.rand_pos()) for _ in range(4)]
-        # self.wolves = []
-        self.llamas: List[Llama] = [Llama(world.rand_pos()) for _ in range(8)]
-        # self.llamas = []
+        self.hares: List[Hare] = [
+            Hare(world.rand_pos()) for _ in range(config.hares)
+        ]
+        self.wolves: List[Wolf] = [
+            Wolf(world.rand_pos()) for _ in range(config.wolves)
+        ]
+        self.llamas: List[Llama] = [
+            Llama(world.rand_pos()) for _ in range(config.llamas)
+        ]
         self.projectiles: List[Projectile] = []
 
     def update(self, dt: float, world: World):

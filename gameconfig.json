@@ -1,0 +1,8 @@
+{
+  "world_size": [1500, 1500],
+  "screen_size": [1000, 800],
+  "wolves": 4,
+  "hares": 10,
+  "llamas": 8,
+  "fps": 30
+}

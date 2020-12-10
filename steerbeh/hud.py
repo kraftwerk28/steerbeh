@@ -16,7 +16,7 @@ class Hud:
 
     def fps(self, fps: float):
         txt = f'{str(int(fps))} fps'
-        self.fps_label = self.font.render(txt, 1, (0, 0, 0))
+        self.fps_label = self.font.render(txt, 1, (255, 255, 255))
 
     def play_damage(self):
         self.damage_snd.play()
